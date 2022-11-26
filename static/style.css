@@ -1,0 +1,96 @@
+html {
+    background-color: rgb(40,40,40);
+    color: rgb(200,200,200);
+    border: 10px solid lightcoral;
+    height: 100%;
+}
+
+body {
+    margin: 15px;
+}
+
+h1 {
+    text-align: center;
+}
+
+h1, h2 {
+    color: lightcoral;
+}
+
+div {
+    margin: 5px;
+}
+
+#search-credentials {
+    display: table;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+select {
+    margin: 10px;
+}
+
+#playlist-list {
+    max-width: 50%;
+    width: 40%;
+    float: left;
+    margin-right: 100px;
+    max-height: 30%;
+}
+
+#playlists {
+    list-style-type: none;
+    overflow-y: scroll;
+    width: auto;
+    display:inline-flexbox;
+    max-height: 300px;
+}
+
+li {
+    margin-block: 10px;
+}
+
+.playlist-item {
+    background-color: rgb(60,60,60);
+    color: rgb(225,225,225);
+    border: 3px solid lightcoral;
+    padding: 5px;
+    padding-inline: 20px;
+    border-radius: 25px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    float:left;
+    width:70%;
+}
+
+#editing-block {
+    max-width: 50%;
+    width: 50%;
+    float:left;
+}
+
+input {
+    width: 15ch;
+    margin-inline-end: 10px;
+    margin-inline-start: 5px;
+    border-radius: 25px;
+    padding-inline: 10px;
+}
+
+button {
+    margin-inline-end: 10px;
+    border-radius: 25px;
+    font-size: 15px;
+}
+
+.delete {
+    margin-block: 10px;
+    float: left;
+    font-size: 18px;
+    padding: 5px;
+    background-color: lightblue;
+    border: 3px solid rgb(60,60,60);
+    color: rgb(60,60,60);
+}
