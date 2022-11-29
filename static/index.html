@@ -6,7 +6,29 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <nav class="navbar">
+            <div class="nav-wrapper">
+                <ul id="navUList" class="navList"> 
+                    <li class="logged-in">
+                        <a href="#" class="li" data-target="modal-account">Account</a>
+                    </li>
+                    <li class="logged-in">
+                        <a href="#" class="li" id="logout">Logout</a>
+                    </li>
+                    <li class="logged-in">
+                        <a href="#" class="li" data-target="modal-create">Create Playlist</a>
+                    </li>
+                    <li class="logged-out">
+                        <a href="#" class="li" data-target="modal-login">Login</a>
+                    </li>
+                    <li class="logged-in">
+                        <a href="#" class="li" data-target="modal-signup">Sign up</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         <h1>Music App</h1>
+        <div id="root"></div>
         <div>
             <h2>Music Search:</h2>
                 <div id="search-credentials">
