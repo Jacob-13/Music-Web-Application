@@ -402,10 +402,12 @@ loadPlaylists();
 
 // ------------------------ Firebase AUTH ATTEMPT ------------------------ \\
 //------------------------ VIDEO 1 IMPORTS AND BASICS ------------------------ \\
+//Import the needed functions from Firebase
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
-import { btnLogin, btnLogout, btnSignup, hideLoginError, lblAuthState, showApp, showLoginError, showLoginForm, showLoginState } from './ui.js';
+import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, updateProfile } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
+import { btnLogin, btnLogout, btnSignup, changePassword, hideLoginError, lblAuthState, showApp, showLoginError, showLoginForm, showLoginState } from './ui.js';
 
+//Initialize the firebase app with the repository's values
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyDuh3g6xopDh9FOhrM4W0LjIjw_NOvu_ic",
     authDomain: "se3316-pparlato-jjohn483-lab4.firebaseapp.com",
@@ -416,58 +418,84 @@ const firebaseApp = initializeApp({
     measurementId: "G-YY9YP5YCVM"
 });
 
+//Create a variable to hold onto the authorization value of the firebase app
 const auth = getAuth(firebaseApp);
 //connectAuthEmulator(auth, "http://localhost:9099");
 
+//Function to allow users to login with an email and a password
 const loginEmailPassword = async () => {
+    //Get the email and password values from the html page
     const loginEmail = txtEmail.value;
     const loginPassword = txtPassword.value;
 
+    //Try to log the user in with the passed values
     try{
-    await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+        //Attemot to authorize the user with the passed username and password
+        await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
     }
     catch(error){
+        //If it doesn.t work, log and show the user the appropreate error
         console.log(error);
         showLoginError(error);
     }
 }
-
+//Add an event listerner to call the loginEmailPassword function when the appropreate button is clicked
 btnLogin.addEventListener("click", loginEmailPassword);
 
+//Create a function to allow users to create a new account
 const createAccount = async () => {
+    //Get the email and password values from the html page
     const loginEmail = txtEmail.value;
     const loginPassword = txtPassword.value;
+    const usersName = userName.value;
 
+    //Try to sign the user up with the given email and password
     try{
-    await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
+    await createUserWithEmailAndPassword(auth, loginEmail, loginPassword)
+    //Then add the name to the user's profile
+    .then(function () {
+        var user = auth.currentUser;
+        updateProfile(user, {displayName: usersName});
+        })
+    .then(function (){
+        window.location.reload();
+    })    
     }
     catch(error){
+        //If it doesn't work log the error and tell the user why
         console.log(error);
         showLoginError(error);
     }
 }
 
+//Add an event listerner to call the createAccount function when the appropreate button is clicked
 btnSignup.addEventListener("click", createAccount);
 
+//Funtion to monitor the login state of the user
 const monitorAuthState = async () => {
     onAuthStateChanged(auth, user => {
+        //If the user is logged in
         if(user){
+            //Display the login state and some information to the user
             console.log(user);
             showApp();
             showLoginState(user);
 
             hideLoginError();
         }
+        //If the user isn't logged in
         else {
+            //Tell the user that they aren't logged in
             showLoginForm();
             lblAuthState.innerHTML = "You're not logged in.";
         }
     });
 } 
 
+//Monitor the authorization state of the user
 monitorAuthState();
 
-//Detect Auth State
+//Function to detect the Auth State
 onAuthStateChanged(auth, user => {
     if(user != null){
         console.log('logged in!');
@@ -476,65 +504,26 @@ onAuthStateChanged(auth, user => {
     }
 });
 
+//Function to logout the user
 const logout = async () => {
+    //Sign out the user when called
     await signOut(auth);
 }
-
+//Add an event listener to call the logout function when the appropreate button is clicked
 btnLogout.addEventListener("click", logout);
 
-
-// var firebase = require('firebase');
-// var firebaseui = require('firebaseui');
-
-// // Initialize the FirebaseUI Widget using Firebase.
-// var ui = new firebaseui.auth.AuthUI(firebase.auth());
-// // Add the email provider ID to the list of FirebaseUI signInOptions
-// ui.start('#firebaseui-auth-container', {
-//     signInOptions: [
-//       {
-//         provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-//         requireDisplayName: true,
-//         signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
-//       }
-//     ]
-//   });
-
-// // Is there an email link sign-in?
-// if (ui.isPendingRedirect()) {
-//     ui.start('#firebaseui-auth-container', uiConfig);
-//   }
-
-//   var uiConfig = {
-//     callbacks: {
-//       signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-//         // User successfully signed in.
-//         // Return type determines whether we continue the redirect automatically
-//         // or whether we leave that to developer to handle.
-//         return true;
-//       },
-//       uiShown: function() {
-//         // The widget is rendered.
-//         // Hide the loader.
-//         document.getElementById('loader').style.display = 'none';
-//       }
-//     },
-//     // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-//     signInFlow: 'popup',
-//     signInSuccessUrl: '<url-to-redirect-to-on-success>',
-//     signInOptions: [
-//       // Leave the lines as is for the providers you want to offer your users.
-//       //firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-//       //firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-//       //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-//       //firebase.auth.GithubAuthProvider.PROVIDER_ID,
-//       firebase.auth.EmailAuthProvider.PROVIDER_ID,
-//       //firebase.auth.PhoneAuthProvider.PROVIDER_ID
-//     ],
-//     // Terms of service url.
-//     tosUrl: '<your-tos-url>',
-//     // Privacy policy url.
-//     privacyPolicyUrl: '<your-privacy-policy-url>'
-//   };
-
-// // The start method will wait until the DOM is loaded.
-// ui.start('#firebaseui-auth-container', uiConfig);
+//Function to update the password of a logged-in user
+const newPassword = async () => {
+    //Assign the new password's value to a variable
+    const newPasswordvalue = changePassword.value;
+    //Call the update password function and pass it the new password
+    updatePassword(auth.currentUser, newPasswordvalue).then(() => {
+        //Log the new password to the console
+        console.log("Password Updated to: " + newPasswordvalue)
+    //Catch any errors
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+//Change the password to the text-fields value when the appropreate button is clicked
+btnChangePassword.addEventListener("click", newPassword);
