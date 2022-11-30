@@ -403,8 +403,8 @@ loadPlaylists();
 // ------------------------ Firebase AUTH ATTEMPT ------------------------ \\
 //------------------------ VIDEO 1 IMPORTS AND BASICS ------------------------ \\
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
-import { btnLogin, btnSignup, showLoginError } from './ui.js';
+import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
+import { btnLogin, btnLogout, btnSignup, hideLoginError, lblAuthState, showApp, showLoginError, showLoginForm, showLoginState } from './ui.js';
 
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyDuh3g6xopDh9FOhrM4W0LjIjw_NOvu_ic",
@@ -417,7 +417,7 @@ const firebaseApp = initializeApp({
 });
 
 const auth = getAuth(firebaseApp);
-connectAuthEmulator(auth, "http://localhost:9099");
+//connectAuthEmulator(auth, "http://localhost:9099");
 
 const loginEmailPassword = async () => {
     const loginEmail = txtEmail.value;
@@ -449,6 +449,24 @@ const createAccount = async () => {
 
 btnSignup.addEventListener("click", createAccount);
 
+const monitorAuthState = async () => {
+    onAuthStateChanged(auth, user => {
+        if(user){
+            console.log(user);
+            showApp();
+            showLoginState(user);
+
+            hideLoginError();
+        }
+        else {
+            showLoginForm();
+            lblAuthState.innerHTML = "You're not logged in.";
+        }
+    });
+} 
+
+monitorAuthState();
+
 //Detect Auth State
 onAuthStateChanged(auth, user => {
     if(user != null){
@@ -457,6 +475,13 @@ onAuthStateChanged(auth, user => {
         console.log('No user');
     }
 });
+
+const logout = async () => {
+    await signOut(auth);
+}
+
+btnLogout.addEventListener("click", logout);
+
 
 // var firebase = require('firebase');
 // var firebaseui = require('firebaseui');
