@@ -2,12 +2,9 @@ const Firestore = require('@google-cloud/firestore');
 const express = require('express');
 const fs = require('fs');
 const csv = require('csv-parser');
-//const { DocumentReference } = require('@google-cloud/firestore');
 
 const db = new Firestore({
     projectId: "se3316-pparlato-jjohn483-lab4",
-    //keyFilename: "",
-     
 });
 const app = express();
 const router = express.Router();
@@ -32,6 +29,7 @@ const port = 3000;
     documents implicitly the first time you add data to the document. You don't need to explicitly create
     collections or documents
 */
+
 const docRef = db.collection('Playlists').doc('name');
 
 docRef.set({
@@ -46,14 +44,16 @@ docRef.set({
 
 });
 
-const aNewRef = db.collection('Playlists').doc('new doc');
+async function asynchCall() {
+    try {
+        const document = db.collection('Playlists').doc('new doc');
+        await document.delete();
+    } catch (error) {
+        console.log(error);
+    }
+};
 
-aNewRef.set({
-    
-    'test': 'beuno?'
-
-});
-
+asynchCall();
 //success
 /*
 async function asyncCall() {
@@ -69,21 +69,8 @@ async function asyncCall() {
 
 asyncCall();
 */
-/*
-const snapshot = db.collection('Playlists').get();
-snapshot.forEach((doc) => {
-  
-    snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
-    });
-  //  console.log(doc.id, '=>', doc.data());
-});
-*/
-
-
 
 // Selects properties for mapping
-
 function selectProperties(...properties) {
     return function(obj) {
         newObj = {};
@@ -167,7 +154,7 @@ app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
     let search = req.params.trackSearch;
 
     // searchValue is the value typed into the search bars
-    let value = req.params.searchValue.toLocaleLowerCase();
+    let value = req.params.searchValue.toLowerCase();
 
     let tracks = [];
 
@@ -256,33 +243,99 @@ app.get('/api/open/youtube/:track', (req, res) => {
     * list of track ids
     * average rating
     * last modified date
+    * Description (optional)
+    * public/private (default set to private)
 
 */
-app.get('/api/open/lists', (req, res) => {
+app.get('/api/open/lists', (req, res) => { // remember to order by last modified date
 
-    async function readPlaylists() {
+    (async () => {
+
         let playlists = [];
-        console.log('calling');
-        const snapshot = await db.collection('Playlists').get();
-                
-        snapshot.forEach((doc) => {
-            console.log(doc.id, '=>', doc.data());
-            playlists.push(doc.data()); // doc.data().name to get the specific props like name
-        });
 
-        return playlists;
-    }
-    
-    readPlaylists()
-        .then(list => {
-            if(list.length > 0)
-            {
-                res.send(list);
+        try {
+            const snapshot = await db.collection('Playlists').get();
+
+            snapshot.forEach((doc) => {
+                playlists.push(doc.data());
+            });
+
+            return res.status(200).send(playlists);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+
+});
+
+/* 
+    * 4.a
+    * creator should be set to the signed in user
+*/
+app.get('/api/secure/userlists/:user', (req,res) => {
+    let creator = req.params.user.toLowerCase();
+
+    (async () => {
+
+        let playlists = [];
+
+        try {
+
+            const snapshot = await db.collection('Playlists').get();
+
+            snapshot.forEach((doc) => {
+                if(doc.data().creator.toLowerCase() == creator){ // if user == playlist creator, add playlist
+                    playlists.push(doc.data());
+                }
+            });
+
+            if(playlists.length > 20){                  // Limit of 20 lists
+                playlists.length = 20;
+                return res.status(200).send(playlists);
+            } else if(playlists.length == 0) {
+                return res.status(404).send(`No playlists found!`);
+            } 
+            else {
+                return res.status(200).send(playlists);
             }
-            else{
-                res.status(404).send('There are no public playlists!');
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+
+});
+
+
+/* 
+    * 4.b
+    * creator should be set to the signed in user
+*/
+app.get('/api/secure/list/:list', (req,res) => { //Broken function
+    let listName = req.params.list;
+
+    (async () => {
+
+        //let listTracks;
+
+        try {
+
+            const listDoc = await db.collection('Playlists').get(listName);
+
+            if(listDoc.data()){
+                res.status(200).send(listDoc.data());
+            } else {
+                res.status(404).send(`Playlist ${listName} not found!`); 
             }
-        })
+            return listDoc.data();
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
 
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
