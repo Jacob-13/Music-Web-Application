@@ -399,3 +399,117 @@ function deletePlaylist(list) {
 };
 
 loadPlaylists();
+
+// ------------------------ Firebase AUTH ATTEMPT ------------------------ \\
+//------------------------ VIDEO 1 IMPORTS AND BASICS ------------------------ \\
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
+import { btnLogin, btnSignup, showLoginError } from './ui.js';
+
+const firebaseApp = initializeApp({
+    apiKey: "AIzaSyDuh3g6xopDh9FOhrM4W0LjIjw_NOvu_ic",
+    authDomain: "se3316-pparlato-jjohn483-lab4.firebaseapp.com",
+    projectId: "se3316-pparlato-jjohn483-lab4",
+    storageBucket: "se3316-pparlato-jjohn483-lab4.appspot.com",
+    messagingSenderId: "393530132117",
+    appId: "1:393530132117:web:9c1bc00dae89a62244fd9c",
+    measurementId: "G-YY9YP5YCVM"
+});
+
+const auth = getAuth(firebaseApp);
+connectAuthEmulator(auth, "http://localhost:9099");
+
+const loginEmailPassword = async () => {
+    const loginEmail = txtEmail.value;
+    const loginPassword = txtPassword.value;
+
+    try{
+    await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+    }
+    catch(error){
+        console.log(error);
+        showLoginError(error);
+    }
+}
+
+btnLogin.addEventListener("click", loginEmailPassword);
+
+const createAccount = async () => {
+    const loginEmail = txtEmail.value;
+    const loginPassword = txtPassword.value;
+
+    try{
+    await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
+    }
+    catch(error){
+        console.log(error);
+        showLoginError(error);
+    }
+}
+
+btnSignup.addEventListener("click", createAccount);
+
+//Detect Auth State
+onAuthStateChanged(auth, user => {
+    if(user != null){
+        console.log('logged in!');
+    } else {
+        console.log('No user');
+    }
+});
+
+// var firebase = require('firebase');
+// var firebaseui = require('firebaseui');
+
+// // Initialize the FirebaseUI Widget using Firebase.
+// var ui = new firebaseui.auth.AuthUI(firebase.auth());
+// // Add the email provider ID to the list of FirebaseUI signInOptions
+// ui.start('#firebaseui-auth-container', {
+//     signInOptions: [
+//       {
+//         provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+//         requireDisplayName: true,
+//         signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+//       }
+//     ]
+//   });
+
+// // Is there an email link sign-in?
+// if (ui.isPendingRedirect()) {
+//     ui.start('#firebaseui-auth-container', uiConfig);
+//   }
+
+//   var uiConfig = {
+//     callbacks: {
+//       signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+//         // User successfully signed in.
+//         // Return type determines whether we continue the redirect automatically
+//         // or whether we leave that to developer to handle.
+//         return true;
+//       },
+//       uiShown: function() {
+//         // The widget is rendered.
+//         // Hide the loader.
+//         document.getElementById('loader').style.display = 'none';
+//       }
+//     },
+//     // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+//     signInFlow: 'popup',
+//     signInSuccessUrl: '<url-to-redirect-to-on-success>',
+//     signInOptions: [
+//       // Leave the lines as is for the providers you want to offer your users.
+//       //firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+//       //firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+//       //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+//       //firebase.auth.GithubAuthProvider.PROVIDER_ID,
+//       firebase.auth.EmailAuthProvider.PROVIDER_ID,
+//       //firebase.auth.PhoneAuthProvider.PROVIDER_ID
+//     ],
+//     // Terms of service url.
+//     tosUrl: '<your-tos-url>',
+//     // Privacy policy url.
+//     privacyPolicyUrl: '<your-privacy-policy-url>'
+//   };
+
+// // The start method will wait until the DOM is loaded.
+// ui.start('#firebaseui-auth-container', uiConfig);
