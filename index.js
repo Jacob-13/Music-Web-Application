@@ -70,9 +70,13 @@ async function asyncCall() {
 asyncCall();
 */
 /*
-const snapshot = await db.collection('Playlists').get();
+const snapshot = db.collection('Playlists').get();
 snapshot.forEach((doc) => {
-  console.log(doc.id, '=>', doc.data());
+  
+    snapshot.forEach((doc) => {
+        console.log(doc.id, '=>', doc.data());
+    });
+  //  console.log(doc.id, '=>', doc.data());
 });
 */
 
@@ -256,10 +260,29 @@ app.get('/api/open/youtube/:track', (req, res) => {
 */
 app.get('/api/open/lists', (req, res) => {
 
-    // access to database
+    async function readPlaylists() {
+        let playlists = [];
+        console.log('calling');
+        const snapshot = await db.collection('Playlists').get();
+                
+        snapshot.forEach((doc) => {
+            console.log(doc.id, '=>', doc.data());
+            playlists.push(doc.data()); // doc.data().name to get the specific props like name
+        });
 
-    // 
-
+        return playlists;
+    }
+    
+    readPlaylists()
+        .then(list => {
+            if(list.length > 0)
+            {
+                res.send(list);
+            }
+            else{
+                res.status(404).send('There are no public playlists!');
+            }
+        })
 
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
