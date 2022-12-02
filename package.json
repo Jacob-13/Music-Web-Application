@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Jacob-13/se3316-jjohn483-lab3#readme",
   "dependencies": {
+    "@google-cloud/firestore": "^6.4.1",
     "bootstrap": "^5.2.3",
     "conf": "^10.2.0",
     "csv-parser": "^3.0.0",
