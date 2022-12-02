@@ -1,20 +1,83 @@
+const Firestore = require('@google-cloud/firestore');
 const express = require('express');
-const app = express();
 const fs = require('fs');
 const csv = require('csv-parser');
-const Conf = require('conf');
-const config = new Conf();
 
+<<<<<<< HEAD
+const db = new Firestore({
+    projectId: "se3316-pparlato-jjohn483-lab4",
+});
+const app = express();
+=======
 const { PassThrough } = require('stream');
 const { type } = require('os');
 
 const e = require('express');
+>>>>>>> main
 const router = express.Router();
 
+// Setup serving front-end code
+app.use('/', express.static('static'));
+app.use(express.json());
+// Parse data in body as JSON
+router.use(express.json());
+
+
 const port = 3000;
+//const Conf = require('conf');
+//const config = new Conf();
+
+//const { PassThrough } = require('stream');
+//const { type } = require('os');
+//const e = require('express');
+
+/*  
+    Firestore stores data in Documents, which are stored in Collections. Firestore creates collections and 
+    documents implicitly the first time you add data to the document. You don't need to explicitly create
+    collections or documents
+*/
+
+const docRef = db.collection('Playlists').doc('name');
+
+docRef.set({
+
+    average_rating: 5,
+    creator: 'Jacob',
+    duration: '4:35',
+    last_modified_date: '29/11/2022',
+    name: 'first test',
+    number_of_tracks: 2,
+    track_ids: [2,3]
+
+});
+
+async function asynchCall() {
+    try {
+        const document = db.collection('Playlists').doc('new doc');
+        await document.delete();
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+asynchCall();
+//success
+/*
+async function asyncCall() {
+    console.log('calling');
+    const snapshot = await db.collection('Playlists').get();
+    
+    // console.log(snapshot);
+    
+    snapshot.forEach((doc) => {
+        console.log(doc.id, '=>', doc.data());
+    });
+}
+
+asyncCall();
+*/
 
 // Selects properties for mapping
-
 function selectProperties(...properties) {
     return function(obj) {
         newObj = {};
@@ -73,8 +136,7 @@ function map() {
     console.log('trackData mapped');
 }
 
-// Setup serving front-end code
-app.use('/', express.static('static'));
+
 
 // Setup middleware to do logging
 app.use((req, res, next) => {
@@ -82,9 +144,208 @@ app.use((req, res, next) => {
     next();
 });
 
-// Parse data in body as JSON
-router.use(express.json());
-app.use(express.json());
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 3.b  Interface for searching tracks based on any combination of artist, band, genre, or track title.
+//      Search results must show track title and artist name
+
+/* 3.c  Same as former 'backend functionality 3'. Front-end can select which properties to display
+        Just make the search options clickable
+*/
+
+app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
+
+    // trackSearch will be the option selected from the drop down menu (artist, band, genre, or track title)
+    let search = req.params.trackSearch;
+
+    // searchValue is the value typed into the search bars
+    let value = req.params.searchValue.toLowerCase();
+
+    let tracks = [];
+
+    switch(search) {
+        case 'artist':
+            {
+                let artistIds = [];
+
+                // Filter the artistData array based on inlcuding search result
+                const artists = artistData.filter(artist => artist.artist_name.toLowerCase().includes(value));
+
+                // Map artists array to only include artist_id prop
+                const artistProperties = artists.map(selectProperties('artist_id'));
+
+                artistProperties.forEach(artist => {
+                    artistIds.push(artist.artist_id);
+                });
+
+                // Getting the tracks for given artists
+                artistIds.forEach(artistId => {             // For each artist ID
+                    trackData.forEach(track => {            // For each track
+                        if(track.artist_id == artistId){    // If the track artist_id matches given artist id, add track
+                            tracks.push(track);
+                        }
+                    })
+                });
+
+                if(tracks.length > 0){
+                    res.send(tracks);       // respond with an array of tracks with matching artist
+                }
+                else {
+                    res.status(404).send(`Artist ${value} was not found!`);
+                }
+
+            }
+            break;
+        case 'band': // Im not sure what the band means
+            break;
+        case 'genre': // Potentially works for now, but should maybe change for more accuracy
+            {
+                // Check if the genre title matches the search value
+
+                tracks = trackData.filter(track => track.track_genres.toLowerCase().includes(value));
+
+                tracks.length = 20;
+                res.send(tracks);
+            }
+            break;
+        default: // Track search
+            {
+                tracks = trackData.filter(track => track.track_title.toLowerCase().includes(value));
+
+                if(tracks.length > 0){
+                    res.send(tracks);
+                } else {
+                    res.status(404).send(`Track ${value} was not found!`);
+                }
+            }
+    };
+
+});
+
+// 3.d attempt
+// for specific search: https://www.youtube.com/results?search_query=mySearch
+
+// I think the direction to youtube needs to be implemented in the front-end
+app.get('/api/open/youtube/:track', (req, res) => {
+
+    window.open('https://www.youtube.com', '_blank');
+
+    res.send(window.open('https://www.youtube.com', '_blank'))
+
+});
+
+
+/* 3.f
+
+    * List of public play-lists ordered by last modified date and showing:
+    * name, creator, total play-time, number of tracks, average rating
+    
+    * Playlist should consist of following properties:
+    * name
+    * creator
+    * duration
+    * number of tracks
+    * list of track ids
+    * average rating
+    * last modified date
+    * Description (optional)
+    * public/private (default set to private)
+
+*/
+app.get('/api/open/lists', (req, res) => { // remember to order by last modified date
+
+    (async () => {
+
+        let playlists = [];
+
+        try {
+            const snapshot = await db.collection('Playlists').get();
+
+            snapshot.forEach((doc) => {
+                playlists.push(doc.data());
+            });
+
+            return res.status(200).send(playlists);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+
+});
+
+/* 
+    * 4.a
+    * creator should be set to the signed in user
+*/
+app.get('/api/secure/userlists/:user', (req,res) => {
+    let creator = req.params.user.toLowerCase();
+
+    (async () => {
+
+        let playlists = [];
+
+        try {
+
+            const snapshot = await db.collection('Playlists').get();
+
+            snapshot.forEach((doc) => {
+                if(doc.data().creator.toLowerCase() == creator){ // if user == playlist creator, add playlist
+                    playlists.push(doc.data());
+                }
+            });
+
+            if(playlists.length > 20){                  // Limit of 20 lists
+                playlists.length = 20;
+                return res.status(200).send(playlists);
+            } else if(playlists.length == 0) {
+                return res.status(404).send(`No playlists found!`);
+            } 
+            else {
+                return res.status(200).send(playlists);
+            }
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+
+});
+
+
+/* 
+    * 4.b
+    * creator should be set to the signed in user
+*/
+app.get('/api/secure/list/:list', (req,res) => { //Broken function
+    let listName = req.params.list;
+
+    (async () => {
+
+        //let listTracks;
+
+        try {
+
+            const listDoc = await db.collection('Playlists').get(listName);
+
+            if(listDoc.data()){
+                res.status(200).send(listDoc.data());
+            } else {
+                res.status(404).send(`Playlist ${listName} not found!`); 
+            }
+            return listDoc.data();
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+
+});
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // Backend functionality 1
