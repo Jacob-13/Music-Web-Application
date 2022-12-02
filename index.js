@@ -1,8 +1,10 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
 const Firestore = require('@google-cloud/firestore');
 const express = require('express');
 const fs = require('fs');
 const csv = require('csv-parser');
-
 
 const db = new Firestore({
     projectId: "se3316-pparlato-jjohn483-lab4",
@@ -75,7 +77,7 @@ asyncCall();
 // Selects properties for mapping
 function selectProperties(...properties) {
     return function(obj) {
-        newObj = {};
+        let newObj = {};
         properties.forEach(prop => {
             newObj[prop] = obj[prop];
         });
