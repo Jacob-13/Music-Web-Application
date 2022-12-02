@@ -20,7 +20,7 @@ app.use(express.json());
 router.use(express.json());
 
 
-const port = 3000;
+const port = 5000;
 //const Conf = require('conf');
 //const config = new Conf();
 
@@ -155,7 +155,7 @@ app.use((req, res, next) => {
 app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
 
     // trackSearch will be the option selected from the drop down menu (artist, band, genre, or track title)
-    let search = req.params.trackSearch;
+    let search = req.params.trackSearch.toLowerCase();
 
     // searchValue is the value typed into the search bars
     let value = req.params.searchValue.toLowerCase();
@@ -188,6 +188,9 @@ app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
 
                 if(tracks.length > 0){
                     res.send(tracks);       // respond with an array of tracks with matching artist
+                } else if (tracks.length > 3){
+                    tracks.length = 3;
+                    res.send(tracks)
                 }
                 else {
                     res.status(404).send(`Artist ${value} was not found!`);
@@ -203,7 +206,7 @@ app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
 
                 tracks = trackData.filter(track => track.track_genres.toLowerCase().includes(value));
 
-                tracks.length = 20;
+                tracks.length = 3;
                 res.send(tracks);
             }
             break;
@@ -213,23 +216,15 @@ app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
 
                 if(tracks.length > 0){
                     res.send(tracks);
-                } else {
+                } else if(tracks.length > 3) {
+                    tracks.length = 3;
+                    res.send(tracks);
+                }
+                else {
                     res.status(404).send(`Track ${value} was not found!`);
                 }
             }
     };
-
-});
-
-// 3.d attempt
-// for specific search: https://www.youtube.com/results?search_query=mySearch
-
-// I think the direction to youtube needs to be implemented in the front-end
-app.get('/api/open/youtube/:track', (req, res) => {
-
-    window.open('https://www.youtube.com', '_blank');
-
-    res.send(window.open('https://www.youtube.com', '_blank'))
 
 });
 
