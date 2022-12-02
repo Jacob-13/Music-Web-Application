@@ -3,17 +3,12 @@ const express = require('express');
 const fs = require('fs');
 const csv = require('csv-parser');
 
-<<<<<<< HEAD
+
 const db = new Firestore({
     projectId: "se3316-pparlato-jjohn483-lab4",
 });
 const app = express();
-=======
-const { PassThrough } = require('stream');
-const { type } = require('os');
 
-const e = require('express');
->>>>>>> main
 const router = express.Router();
 
 // Setup serving front-end code
