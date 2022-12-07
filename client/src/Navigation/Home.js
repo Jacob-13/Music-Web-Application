@@ -20,10 +20,27 @@ const Home = () => {
 
     //onChange={newTracks}
 
+    /////////////////////
+    //Function to see if I can get user data
+    const getAdminDeets = async () => {
+        fetch("/api/admin")
+            .then(res=> res.json())
+            .then(data => {
+                console.log(data.value);
+            });
+    }
+
+    /////////////////////
+
     return (
         <div className="Home">
 
             <h1>PJ Music App</h1>
+
+            <div>
+                <h1>Get Admin Button</h1>
+                <button onClick={getAdminDeets}>log Admin</button>
+            </div>
 
             <div>
 

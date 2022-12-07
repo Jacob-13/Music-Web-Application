@@ -1,4 +1,6 @@
 import { createRequire } from "module";
+//import { getOverlayDirection } from "react-bootstrap/esm/helpers";
+//import { getHeapCodeStatistics } from "v8";
 const require = createRequire(import.meta.url);
 
 const Firestore = require('@google-cloud/firestore');
@@ -549,4 +551,38 @@ app.use('/api/test', router)
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
+});
+
+/////////////////////////////////////////////////////////////////////////////////
+
+//Section 5 - Admin Authentication
+//Import needed collections from firebase firestore
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+
+//GET function for getting all users with Admin status
+app.get('/api/admin', (req, res) => {
+    //Create an async function to use await
+    async () => {
+        //Await the getDocs function to get all Admin users and assign them to a variable
+        const querySnapshot = await getDocs(collection(db, "Admin"));
+        //Read that variable
+        querySnapshot.forEach((doc) => {
+            //Log the info
+            console.log(`${doc.id} => ${doc.data()}`);
+        });
+    }
+});
+
+//POST function for adding users to the admin database
+app.post('/api/grantAdmin/:userEmail', (req, res) => {
+    //Get the user input to know the email to be added to the admin list
+    const newAdminEmail = req.params.name;
+    //Async function so await can be used
+    async () => {
+        //Await setDoc to finish
+        await setDoc(doc(db, "admin"), {
+            //Add the new Admin to the admin database
+            email: newAdminEmail
+        });
+    }
 });
