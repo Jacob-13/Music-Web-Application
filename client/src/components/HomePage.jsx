@@ -21,6 +21,18 @@ const HomePage = () => {
         })
     }
 
+    /////////////////////
+    //Function to see if I can get user data
+    const getAdminDeets = async () => {
+        fetch("/api/admin")
+            .then(res=> res.json())
+            .then(data => {
+                console.log(data);
+            });
+    }
+
+    /////////////////////
+
     const searchTracks = async () => {
         fetch(`/api/open/${trackSearchMethod}/${trackSearch}`)
             .then(res => res.json())
@@ -42,6 +54,11 @@ const HomePage = () => {
         <div className="homePage">
 
             <h1>Music App</h1>
+
+            <div>
+                <h1>Get Admin Button</h1>
+                <button onClick={getAdminDeets}>log Admin</button>
+            </div>
 
             <div>
 
@@ -94,6 +111,7 @@ const HomePage = () => {
                 }
 
             </div>
+
         </div>
     );
 }
