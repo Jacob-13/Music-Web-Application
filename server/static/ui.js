@@ -9,6 +9,8 @@ export const btnSignup = document.querySelector('#btnSignup')
 
 export const btnLogout = document.querySelector('#btnLogout')
 
+export const btnUpdate = document.querySelector('#btnUpdate')
+
 export const divAuthState = document.querySelector('#divAuthState')
 export const lblAuthState = document.querySelector('#lblAuthState')
 
