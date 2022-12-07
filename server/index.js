@@ -1,4 +1,6 @@
 import { createRequire } from "module";
+import { getOverlayDirection } from "react-bootstrap/esm/helpers";
+import { getHeapCodeStatistics } from "v8";
 const require = createRequire(import.meta.url);
 
 const Firestore = require('@google-cloud/firestore');
@@ -556,22 +558,36 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 
-//Import admin for use in creating a function for making a user an admin
-const admin = require('firebase-admin');
-//Initialize the input on the server end
-admin.initializeApp();
-//Export the function for use in the app and assign it to the callback function to be used
-exports.addAdminRole = functions.https.onCall((data, context) => {
-    //get the user and add a custome claim to that user (admin)
-    return admin.auth().getUserByEmail(data.email).then(user => {
-        return admin.auth().setCustomUserClaims(user.uid, {
-            admin: true
+/////////////////////////////////////////////////////////////////////////////////
+
+//Section 5 - Admin Authentication
+//Import needed collections from firebase firestore
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+
+//GET function for getting all users with Admin status
+app.get('/api/admin', (req, res) => {
+    //Create an async function to use await
+    async () => {
+        //Await the getDocs function to get all Admin users and assign them to a variable
+        const querySnapshot = await getDocs(collection(db, "Admin"));
+        //Read that variable
+        querySnapshot.forEach((doc) => {
+            //Log the info
+            console.log(`${doc.id} => ${doc.data()}`);
         });
-    }).then(() => {
-        return {
-            message: `Success! ${data.email} has been made an admin`
-        }
-    }).catch(err => {
-        return err;
-    });
+    }
+});
+
+//POST function for adding users to the admin database
+app.post('/api/grantAdmin/:userEmail', (req, res) => {
+    //Get the user input to know the email to be added to the admin list
+    const newAdminEmail = req.params.name;
+    //Async function so await can be used
+    async () => {
+        //Await setDoc to finish
+        await setDoc(doc(db, "admin"), {
+            //Add the new Admin to the admin database
+            email: newAdminEmail
+        });
+    }
 });
