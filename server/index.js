@@ -33,7 +33,7 @@ const port = 5000;
     documents implicitly the first time you add data to the document. You don't need to explicitly create
     collections or documents
 */
-
+/*
 const docRef = db.collection('Playlists').doc('name');
 
 docRef.set({
@@ -47,7 +47,7 @@ docRef.set({
     track_ids: [2,3]
 
 });
-
+*/
 async function asynchCall() {
     try {
         const document = db.collection('Playlists').doc('new doc');
@@ -312,6 +312,7 @@ app.get('/api/secure/userlists/:user', (req,res) => {
     * 4.b
     * creator should be set to the signed in user
 */
+/*
 app.get('/api/secure/list/:list', (req,res) => { //Broken function
     let listName = req.params.list;
 
@@ -336,7 +337,75 @@ app.get('/api/secure/list/:list', (req,res) => { //Broken function
         }
     })();
 
-});
+});*/
+
+/*
+    * Playlist should consist of following properties:
+    * name
+    * creator
+    * duration
+    * number of tracks
+    * list of track ids
+    * average rating
+    * last modified date
+    * Description (optional)
+    * public/private (default set to private)
+*/
+
+app.put('/api/secure/create/:creator', (req, res) => {
+
+    let maker = req.params.creator;
+
+    let playlist = req.body;
+
+    //check for a playlist name to ensure no duplicates
+
+    const docRef = db.collection('Playlists').doc(req.body.name);
+
+    docRef.set({
+
+        average_rating: req.body.average_rating,
+        creator: maker,
+        duration: '4:35',                   // properly do this if theres time
+        last_modified_date: '29/11/2022',   // same with this
+        name: req.body.name,
+        number_of_tracks: req.body.tracks.length,
+        track_ids: req.body.tracks,
+        status: req.body.status
+
+    });
+
+    (async () => {
+
+        let playlists = [];
+
+        try {
+
+            const snapshot = await db.collection('Playlists').get();
+
+            snapshot.forEach((doc) => {
+                if(doc.data().name.toLowerCase() == req.body.name.toLowerCase()){ // if user == playlist creator, add playlist
+                    playlists.push(doc.data());
+                }
+            });
+
+            if(playlists.length > 20){                  // Limit of 20 lists
+                playlists.length = 20;
+                return res.status(200).send(playlists);
+            } else if(playlists.length == 0) {
+                return res.status(404).send(`No playlists found!`);
+            } 
+            else {
+                return res.status(200).send(playlists);
+            }
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+    
+})
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

@@ -28,7 +28,7 @@ const PublicPlaylists = () => {
                     <ol className="publicPlaylists">
                     {
                         playlists.map((playlist) => (
-                        <PlaylistTrack playlist={playlist}/>
+                            <PlaylistTrack playlist={playlist}/>
                         ))
                     }
 
