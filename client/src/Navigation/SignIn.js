@@ -155,6 +155,12 @@ const SignIn = () => {
     }
     //Change the password to the text-fields value when the appropreate button is clicked
     //btnChangePassword.addEventListener("click", newPassword);
+    const adminTest = document.querySelector('#adminTest')
+    
+    const getAdminDeets = async () => {
+        fetch("/api/admin")
+            .then(res => {adminTest.innerHTML = res.body});
+    }
 
     return (
         <div>
@@ -185,6 +191,12 @@ const SignIn = () => {
               <button id="btnLogin" type="button" class="button buttonBlue" onClick={useLoginEmailPassword}>Log in</button>
               <button id="btnSignup" type="button" class="button buttonBlue" onClick={createAccount}>Sign up</button>
             </form>
+          </div>
+
+          <div>
+                <h1>Get Admin Button</h1>
+                <button onClick={getAdminDeets}>log Admin</button>
+                <h3 id="adminTest"> Admin Go Here </h3>
           </div>
 
         </div>

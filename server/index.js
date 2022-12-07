@@ -630,28 +630,110 @@ import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 
 //GET function for getting all users with Admin status
 app.get('/api/admin', (req, res) => {
-    //Create an async function to use await
-    async () => {
-        //Await the getDocs function to get all Admin users and assign them to a variable
-        const querySnapshot = await getDocs(collection(db, "Admin"));
-        //Read that variable
-        querySnapshot.forEach((doc) => {
-            //Log the info
-            console.log(`${doc.id} => ${doc.data()}`);
-        });
-    }
+
+    (async () => {
+
+        let admin = [];
+
+        try {
+            const snapshot = await db.collection('Admin').get();
+
+            snapshot.forEach((doc) => {
+                admin.push(doc.data());
+            });
+
+            return res.status(200).send(admin);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
 });
 
 //POST function for adding users to the admin database
-app.post('/api/grantAdmin/:userEmail', (req, res) => {
-    //Get the user input to know the email to be added to the admin list
-    const newAdminEmail = req.params.name;
-    //Async function so await can be used
-    async () => {
-        //Await setDoc to finish
-        await setDoc(doc(db, "admin"), {
-            //Add the new Admin to the admin database
-            email: newAdminEmail
-        });
-    }
+app.put('/api/grantAdmin/:userEmails', (req, res) => {
+    let newAdmin = req.params.userEmails;
+ 
+    const docRef = db.collection('Admin').doc(req.body.userEmail);
+ 
+    docRef.set({
+        userEmail: newAdmin
+    });
+ 
+    (async () => {
+
+        let admin = [];
+ 
+        try {
+ 
+            const snapshot = await db.collection('Admin').get();
+ 
+            snapshot.forEach((doc) => {
+                admin.push(doc.data());
+            });
+ 
+            return res.status(200).send(admin);
+            
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+
+
 });
+
+app.put('/api/secure/create/:creator', (req, res) => {
+ 
+    let maker = req.params.creator;
+ 
+ 
+    //check for a playlist name to ensure no duplicates
+ 
+    const docRef = db.collection('Playlists').doc(req.body.name);
+ 
+    docRef.set({
+ 
+        average_rating: req.body.average_rating,
+        creator: maker,
+        duration: '4:35',                   // properly do this if theres time
+        last_modified_date: '29/11/2022',   // same with this
+        name: req.body.name,
+        number_of_tracks: req.body.track_ids.length,
+        track_ids: req.body.track_ids,
+        status: req.body.status,
+        description: req.body.description
+ 
+    });
+ 
+    (async () => {
+ 
+        let playlists = [];
+ 
+        try {
+ 
+            const snapshot = await db.collection('Playlists').get();
+ 
+            snapshot.forEach((doc) => {
+                if(doc.data().name.toLowerCase() == req.body.name.toLowerCase()){ // if user == playlist creator, add playlist
+                    playlists.push(doc.data());
+                }
+            });
+ 
+            if(playlists.length > 20){                  // Limit of 20 lists
+                playlists.length = 20;
+                return res.status(200).send(playlists);
+            } else if(playlists.length == 0) {
+                return res.status(404).send(`No playlists found!`);
+            }
+            else {
+                return res.status(200).send(playlists);
+            }
+ 
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+   
+})

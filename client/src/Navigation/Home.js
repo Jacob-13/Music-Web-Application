@@ -20,12 +20,12 @@ const Home = () => {
 
     /////////////////////
     //Function to see if I can get user data
+
+    const adminTest = document.querySelector('#adminTest')
+
     const getAdminDeets = async () => {
         fetch("/api/admin")
-            .then(res=> res.json())
-            .then(data => {
-                console.log(data.value);
-            });
+            .then(res => {console.log(res.body)});
     }
 
     /////////////////////
@@ -38,6 +38,7 @@ const Home = () => {
             <div>
                 <h1>Get Admin Button</h1>
                 <button onClick={getAdminDeets}>log Admin</button>
+                <h3 id="adminTest"> Admin Go Here </h3>
             </div>
 
             <div>

@@ -405,7 +405,7 @@ loadPlaylists();
 //Import the needed functions from Firebase
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, updateProfile, setCustomUserClaims } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
-import { btnLogin, btnLogout, btnSignup, btnUpdate, changePassword, hideLoginError, lblAuthState, showApp, showLoginError, showLoginForm, showLoginState } from '../ui.js';
+import { btnLogin, btnLogout, btnSignup, btnUpdate, changePassword, hideLoginError, lblAuthState, showApp, showLoginError, showLoginForm, showLoginState } from '../../client/src/ui.js';
 
 //Initialize the firebase app with the repository's values
 const firebaseApp = initializeApp({
