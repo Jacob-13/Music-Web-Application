@@ -2,7 +2,8 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import PlaylistTrack from './PlaylistTrack';
-import TrackBasic from './TrackBasic';
+import SearchTrack from './SearchTrack';
+import Track from './Track';
 
 const HomePage = () => {
 
@@ -27,14 +28,15 @@ const HomePage = () => {
                 console.log(`/api/open/${trackSearchMethod}/${trackSearch}`)
                 setTrackSearchResult(data);
                 console.log("search result " + trackSearchResult)
-                console.log("data " + data);
+                console.log("data " + data[0].track_title);
             });
     }
 
-    useEffect(() => {
-        getPublicPlaylists();
-    }, []);
+    //useEffect(() => {
+        //searchTracks();
+    //}, []);
 
+    
 
     return (
         <div className="homePage">
@@ -47,7 +49,7 @@ const HomePage = () => {
                     their favourite songs via a search feature. Feel free to browse other users public playlists by
                     searching by playlists!
                 </p>
-                <button>Login</button>
+                <button>Sign up</button><button>Login</button>
 
             </div>
 
@@ -62,24 +64,7 @@ const HomePage = () => {
 
             <div>
 
-            <div>
-
-                {
-                    trackSearchResult?.length > 0
-                        ? (
-                            <ol>
-                                {
-                                    trackSearchResult.map((track) => (
-                                        <TrackBasic id = {track.track_id}/>
-                                    ))
-                                }
-                            </ol>
-                        ) : (
-                            <p>No tracks were found</p>
-                        )
-                }
-
-            </div>
+                <SearchTrack searchMethod = {searchMethod} searchValue = {trackSearch} />
 
             </div>
 
@@ -87,7 +72,7 @@ const HomePage = () => {
 
                 <h1>Public Playlists</h1>
                 <input placeholder='search...' value={publicSearch} onChange={(e) => setPublicSearch(e.target.value)}/>
-                <button>Search</button>
+                <button onClick={getPublicPlaylists}>Search</button>
 
             </div>
 

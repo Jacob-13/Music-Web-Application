@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import HomePage from "./components/HomePage";
+import React from 'react';
+import NavBar from './Navigation/Navbar.js';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Imported pages
+import Home from './Navigation/Home.js';
+import SignIn from './Navigation/SignIn.js';
 
 function App() {
 
-  const getUserPlaylist = async (searchTerm) => { //get playlists of a specific user
-    fetch(`/api/secure/userlists/` + searchTerm)
-      .then(res => res.json())
-      .then(data => {
-        //setPlaylists(data);
-      })
-  }
-
   return (
-    <div className="App">
-      
-      <HomePage />
+    
+    <Router>
 
-    </div>
+      <NavBar />
+      
+      <Routes>
+        <Route path='/' element={<Home/>} />
+        <Route path='/signIn' element={<SignIn/>} />
+      </Routes>
+
+    </Router>
+
   );
 }
 

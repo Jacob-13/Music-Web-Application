@@ -2,32 +2,36 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-const TrackDetails = ({id}) => {
+const Track = ({id}) => {
     
     const [track, setTrack] = useState({});
-    const [trackTitle, setTrackTitle] = useState('');
-    const [trackArtist, setTrackArtist] = useState('');
 
     const getTrackInfo = async (track_id) => {
         fetch("/api/track/" + track_id)
             .then(res => res.json())
             .then(track => {
                 setTrack(track);
-                setTrackTitle(track.track_title);
-                setTrackArtist(track.artist_name);
             });
     }
     
-    useEffect(() => {
-        getTrackInfo(id);
-    }, []);
-
     const playTrack = function() {
-        window.open(`https://www.youtube.com/results?search_query=${trackTitle}+By+${trackArtist}`, '_blank');
+        window.open(`https://www.youtube.com/results?search_query=${track.track_title}+By+${track.artist_name}`, '_blank');
     }
 
+    useEffect(() => {
+        getTrackInfo(id);
+    }, [id]);
+
     return (
-       <div className="trackDetails" >
+       <div className="trackBasic" >
+            {
+                track ? (
+                    <p><b>{track.track_title}</b> Artist: {track.artist_name}</p>
+                ) : (
+                    <p>There are no tracks in this playlist</p>
+                )
+            }
+
             {
                 track ? (
                     <p> Duration: {track.track_duration} <button onClick={playTrack}>Play</button> </p>
@@ -35,9 +39,12 @@ const TrackDetails = ({id}) => {
                     <p>There are no tracks in this playlist</p>
                 )
             }
+
        </div>
+        
+
     );
 
 }
 
-export default TrackDetails;
+export default Track;

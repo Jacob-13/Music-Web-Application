@@ -186,16 +186,15 @@ app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
                     })
                 });
 
-                if(tracks.length > 0){
-                    res.send(tracks);       // respond with an array of tracks with matching artist
-                } else if (tracks.length > 3){
+                if(tracks.length > 3){
                     tracks.length = 3;
-                    res.send(tracks)
+                    res.send(tracks);       // respond with an array of tracks with matching artist
+                } else if (tracks.length > 0){
+                    res.send(tracks);
                 }
                 else {
                     res.status(404).send(`Artist ${value} was not found!`);
                 }
-
             }
             break;
         case 'band': // Im not sure what the band means
@@ -214,10 +213,11 @@ app.get('/api/open/:trackSearch/:searchValue', (req, res) => {
             {
                 tracks = trackData.filter(track => track.track_title.toLowerCase().includes(value));
 
-                if(tracks.length > 0){
-                    res.send(tracks);
-                } else if(tracks.length > 3) {
+                if(tracks.length > 3){
                     tracks.length = 3;
+                    res.send(tracks);
+                } else if(tracks.length > 0) {
+                    
                     res.send(tracks);
                 }
                 else {

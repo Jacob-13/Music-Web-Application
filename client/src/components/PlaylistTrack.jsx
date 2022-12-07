@@ -1,32 +1,16 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import TrackBasic from './TrackBasic';
+import Track from './Track';
 
 const PlaylistTrack = ({playlist}) => {
-    
-    const [list, setList] = useState({});
-
-    /*const getTrackInfo = async (routeEnd) => {
-        fetch("/api/track/" + routeEnd)
-            .then(res => res.json())
-            .then(track_id => {
-                setTrack(track_id);
-            });
-    }
-
-    {track.track_title} By {track.artist_name}
-    */
-    useEffect(() => {
-        setList(playlist);
-    }, []);
 
     return (
        <li>
         {
-            list ? (
+            playlist ? (
                 <div className="playlist">
-                    {list.name}
+                    {playlist.name}
                 </div>
             ) : (
                 <div>No Playlists Found!</div>
@@ -34,10 +18,10 @@ const PlaylistTrack = ({playlist}) => {
         }
 
         {
-            list.track_ids?.length > 0
+            playlist.track_ids?.length > 0
                 ? (
-                    list.track_ids.map((id) => (
-                        <TrackBasic id={id}/>
+                    playlist.track_ids.map((id) => (
+                        <Track id={id}/>
                     ))
                 ) : (
                     <div>
