@@ -358,8 +358,6 @@ app.put('/api/secure/create/:creator', (req, res) => {
 
     let maker = req.params.creator;
 
-    let playlist = req.body;
-
     //check for a playlist name to ensure no duplicates
 
     const docRef = db.collection('Playlists').doc(req.body.name);
@@ -371,9 +369,10 @@ app.put('/api/secure/create/:creator', (req, res) => {
         duration: '4:35',                   // properly do this if theres time
         last_modified_date: '29/11/2022',   // same with this
         name: req.body.name,
-        number_of_tracks: req.body.tracks.length,
-        track_ids: req.body.tracks,
-        status: req.body.status
+        number_of_tracks: req.body.track_ids.length,
+        track_ids: req.body.track_ids,
+        status: req.body.status,
+        description: req.body.description
 
     });
 

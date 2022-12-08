@@ -15,6 +15,7 @@ const Home = () => {
         console.log(track);
     }, [track])
 
+
     //onChange={(e) => setTrack(e.target.value)}
 
     //onChange={newTracks}
@@ -28,8 +29,6 @@ const Home = () => {
         fetch("/api/admin")
             .then(res => {console.log(res.body)});
     }
-
-    /////////////////////
 
     return (
         <div className="Home">
