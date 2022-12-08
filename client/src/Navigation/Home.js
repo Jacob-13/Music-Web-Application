@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PublicPlaylists from '../components/PublicPlaylists';
+import '../SecurityAndPrivatePolicy.txt';
 
 // Component Dependencies
 import SearchTrack from '../components/SearchTrack'
@@ -14,10 +15,28 @@ const Home = () => {
         console.log(track);
     }, [track])
 
+
+    //onChange={(e) => setTrack(e.target.value)}
+
+    //onChange={newTracks}
+
+    /////////////////////
+    //Function to see if I can get user data
+
+    const adminTest = document.querySelector('#adminTest')
+
+    const getAdminDeets = async () => {
+        fetch("/api/admin")
+            .then(res => {console.log(res.body)});
+    }
+
     return (
         <div className="Home">
 
             <h1>PJ Music App</h1>
+
+            <div>
+            </div>
 
             <div>
 

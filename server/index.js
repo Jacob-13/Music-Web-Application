@@ -1,4 +1,6 @@
 import { createRequire } from "module";
+//import { getOverlayDirection } from "react-bootstrap/esm/helpers";
+//import { getHeapCodeStatistics } from "v8";
 const require = createRequire(import.meta.url);
 
 const Firestore = require('@google-cloud/firestore');
@@ -618,3 +620,119 @@ app.use('/api/test', router)
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
+
+/////////////////////////////////////////////////////////////////////////////////
+
+//Section 5 - Admin Authentication
+//Import needed collections from firebase firestore
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+
+//GET function for getting all users with Admin status
+app.get('/api/admin', (req, res) => {
+
+    (async () => {
+
+        let admin = [];
+
+        try {
+            const snapshot = await db.collection('Admin').get();
+
+            snapshot.forEach((doc) => {
+                admin.push(doc.data());
+            });
+
+            return res.status(200).send(admin);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+});
+
+//POST function for adding users to the admin database
+app.put('/api/grantAdmin/:userEmails', (req, res) => {
+    let newAdmin = req.params.userEmails;
+ 
+    const docRef = db.collection('Admin').doc(req.body.userEmail);
+ 
+    docRef.set({
+        userEmail: newAdmin
+    });
+ 
+    (async () => {
+
+        let admin = [];
+ 
+        try {
+ 
+            const snapshot = await db.collection('Admin').get();
+ 
+            snapshot.forEach((doc) => {
+                admin.push(doc.data());
+            });
+ 
+            return res.status(200).send(admin);
+            
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+
+
+});
+
+app.put('/api/secure/create/:creator', (req, res) => {
+ 
+    let maker = req.params.creator;
+ 
+ 
+    //check for a playlist name to ensure no duplicates
+ 
+    const docRef = db.collection('Playlists').doc(req.body.name);
+ 
+    docRef.set({
+ 
+        average_rating: req.body.average_rating,
+        creator: maker,
+        duration: '4:35',                   // properly do this if theres time
+        last_modified_date: '29/11/2022',   // same with this
+        name: req.body.name,
+        number_of_tracks: req.body.track_ids.length,
+        track_ids: req.body.track_ids,
+        status: req.body.status,
+        description: req.body.description
+ 
+    });
+ 
+    (async () => {
+ 
+        let playlists = [];
+ 
+        try {
+ 
+            const snapshot = await db.collection('Playlists').get();
+ 
+            snapshot.forEach((doc) => {
+                if(doc.data().name.toLowerCase() == req.body.name.toLowerCase()){ // if user == playlist creator, add playlist
+                    playlists.push(doc.data());
+                }
+            });
+ 
+            if(playlists.length > 20){                  // Limit of 20 lists
+                playlists.length = 20;
+                return res.status(200).send(playlists);
+            } else if(playlists.length == 0) {
+                return res.status(404).send(`No playlists found!`);
+            }
+            else {
+                return res.status(200).send(playlists);
+            }
+ 
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+    })();
+   
+})
