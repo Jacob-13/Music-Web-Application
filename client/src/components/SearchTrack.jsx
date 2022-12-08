@@ -28,8 +28,8 @@ const SearchTrack = ({searchMethod, searchValue}) => {
                     ? (
                         <ol>
                             {
-                                result.map((track) => (
-                                    <Track id = {track.track_id}/>
+                                result.map((track, i) => (
+                                    <Track id = {track.track_id} index = {i}/>
                                 ))
                             }
                         </ol>

@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.trackBasicInfo {
+  cursor: pointer;
+}
+
+.trackInformation {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.trackDetail {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s
+}
+
+.trackDetail.show {
+  height: auto;
+  transition: all 0.5s;
+}

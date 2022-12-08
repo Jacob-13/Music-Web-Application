@@ -14,10 +14,6 @@ const Home = () => {
         console.log(track);
     }, [track])
 
-    //onChange={(e) => setTrack(e.target.value)}
-
-    //onChange={newTracks}
-
     return (
         <div className="Home">
 

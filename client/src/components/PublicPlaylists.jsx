@@ -27,9 +27,17 @@ const PublicPlaylists = () => {
                 ? (
                     <ol className="publicPlaylists">
                     {
-                        playlists.map((playlist) => (
-                            <PlaylistTrack playlist={playlist}/>
-                        ))
+                        playlists.map((playlist) => 
+                            <div>
+                            {
+                                String(playlist.status) == 'false' ? (
+                                    <PlaylistTrack playlist={playlist}/>
+                                ) : (
+                                    <p></p>
+                                )
+                            }
+                            </div>
+                        )
                     }
 
                     </ol>
