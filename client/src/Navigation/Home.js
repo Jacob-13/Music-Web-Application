@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PublicPlaylists from '../components/PublicPlaylists';
+import '../SecurityAndPrivatePolicy.txt';
 
 // Component Dependencies
 import SearchTrack from '../components/SearchTrack'
@@ -36,9 +37,6 @@ const Home = () => {
             <h1>PJ Music App</h1>
 
             <div>
-                <h1>Get Admin Button</h1>
-                <button onClick={getAdminDeets}>log Admin</button>
-                <h3 id="adminTest"> Admin Go Here </h3>
             </div>
 
             <div>
