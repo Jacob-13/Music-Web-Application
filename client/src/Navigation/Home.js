@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PublicPlaylists from '../components/PublicPlaylists';
+import '../SecurityAndPrivatePolicy.txt';
 
 // Component Dependencies
 import SearchTrack from '../components/SearchTrack'
@@ -20,12 +21,12 @@ const Home = () => {
 
     /////////////////////
     //Function to see if I can get user data
+
+    const adminTest = document.querySelector('#adminTest')
+
     const getAdminDeets = async () => {
         fetch("/api/admin")
-            .then(res=> res.json())
-            .then(data => {
-                console.log(data.value);
-            });
+            .then(res => {console.log(res.body)});
     }
 
     /////////////////////
@@ -36,8 +37,6 @@ const Home = () => {
             <h1>PJ Music App</h1>
 
             <div>
-                <h1>Get Admin Button</h1>
-                <button onClick={getAdminDeets}>log Admin</button>
             </div>
 
             <div>

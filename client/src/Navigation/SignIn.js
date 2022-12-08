@@ -24,19 +24,23 @@ const SignIn = () => {
     const [txtEmail, setTxtEmail] = useState("");
     const [txtPassword, setTxtPassword] = useState("");
     const [userName, setUserName] = useState("");
+    const [newPassword, setNewPassword] = useState("");
 
 
     //Create a variable to hold onto the authorization value of the firebase app
     const auth = getAuth(firebaseApp);
     //connectAuthEmulator(auth, "http://localhost:9099");
 
+    //Select the value to be updated with the password
+    const newPas = document.querySelector('#newPas');
+
     //Function to allow users to login with an email and a password
     const useLoginEmailPassword = async () => {
         //Get the email and password values from the html page
         const loginEmail = txtEmail;
         const loginPassword = txtPassword;
-        const lblLoginErrorMessage = document.querySelector('#lblLoginErrorMessage')
-
+        const lblLoginErrorMessage = document.querySelector('#lblLoginErrorMessage');
+    
         //Try to log the user in with the passed values
         try{
             //Attempt to authorize the user with the passed username and password
@@ -48,7 +52,6 @@ const SignIn = () => {
         catch(error){
             //If it doesn.t work, log and show the user the appropreate error
             console.log(error);
-            // TODO
             if (error.code == AuthErrorCodes.INVALID_PASSWORD) {
                     lblLoginErrorMessage.innerHTML = `Wrong password. Try again.`;
                 } else if (txtEmail == ""){
@@ -67,6 +70,7 @@ const SignIn = () => {
         const loginEmail = txtEmail;
         const loginPassword = txtPassword;
         const usersName = userName;
+        const lblLoginErrorMessage = document.querySelector('#lblLoginErrorMessage');
 
         //Try to sign the user up with the given email and password
         try{
@@ -83,46 +87,17 @@ const SignIn = () => {
         catch(error){
             //If it doesn't work log the error and tell the user why
             console.log(error);
-            //TODO
-            //showLoginError(error);
+            if (error.code == AuthErrorCodes.INVALID_PASSWORD) {
+                lblLoginErrorMessage.innerHTML = `Wrong password. Try again.`;
+            } else if (txtEmail == ""){
+                lblLoginErrorMessage.innerHTML = "Please enter an email";
+            } else {
+                lblLoginErrorMessage.innerHTML = `Error: ${error.message}`;    
+            }
+
+        lblLoginErrorMessage.removeAttribute("hidden");
         }
     }
-
-    const makeAdmin = () => {
-        var admin = auth.currentUser;
-        auth.setCustomUserClaims(admin, { admin: true }).then(() =>{
-            console.log(admin);
-        });
-    }
-
-    //Funtion to monitor the login state of the user
-    const monitorAuthState = async () => {
-        onAuthStateChanged(auth, user => {
-            //If the user is logged in
-            if(user){
-                //Display the login state and some information to the user
-                console.log(user);
-                //TODO
-                //showApp();
-                //TODO
-                //showLoginState(user);
-
-                //TODO
-                //hideLoginError();
-            }
-            //If the user isn't logged in
-            else {
-                //Tell the user that they aren't logged in
-                //TODO
-                //showLoginForm();
-                // TODO
-                //lblAuthState.innerHTML = "You're not logged in.";
-            }
-        });
-    } 
-
-    //Monitor the authorization state of the user
-    monitorAuthState();
 
     //Function to detect the Auth State
     onAuthStateChanged(auth, user => {
@@ -140,22 +115,24 @@ const SignIn = () => {
     }
 
     //Function to update the password of a logged-in user
-    const newPassword = async () => {
+    const newPasswordFunc = async () => {
         //Assign the new password's value to a variable
-        // TODO
-        //const newPasswordvalue = changePassword.value;
+        const newPasswordvalue = newPassword;
         //Call the update password function and pass it the new password
-        //updatePassword(auth.currentUser, newPasswordvalue).then(() => {
-            //Log the new password to the console
-            //console.log("Password Updated to: " + newPasswordvalue)
+        updatePassword(auth.currentUser, newPasswordvalue).then(() => {
+            //Show the new password to the user
+            newPas.innerHTML("Password Updated to: " + newPasswordvalue);
+            newPas.removeAttribute("hidden");
         //Catch any errors
-        //}).catch((error) => {
-            //console.log(error);
-        //});
+        }).catch((error) => {
+            newPas.innerHTML(error);
+            newPas.removeAttribute("hidden");
+        });
     }
     //Change the password to the text-fields value when the appropreate button is clicked
     //btnChangePassword.addEventListener("click", newPassword);
-
+    const adminTest = document.querySelector('#adminTest')
+    
     return (
         <div>
             <div className="SignIn">
@@ -164,7 +141,6 @@ const SignIn = () => {
 
             <div id="login">
             <div class="header">
-              <h1>Getting Started with Firebase Auth</h1>
             </div>
             <form>
               <div class="group">
@@ -185,6 +161,16 @@ const SignIn = () => {
               <button id="btnLogin" type="button" class="button buttonBlue" onClick={useLoginEmailPassword}>Log in</button>
               <button id="btnSignup" type="button" class="button buttonBlue" onClick={createAccount}>Sign up</button>
             </form>
+          </div>
+
+          <div>
+
+            <h1>Change Password</h1>
+            <input id="newPassword" type="password" onChange={(e) => setNewPassword(e.target.value)}></input>
+            <div id="divLoginError" class="group">
+                <div id="newPas" class="errorlabel" hidden>Changed Password</div>
+            </div>
+            <button id="changePasBtn" type="button" class="button buttonBlue" onClick={newPasswordFunc}>Change Password</button>
           </div>
 
         </div>
