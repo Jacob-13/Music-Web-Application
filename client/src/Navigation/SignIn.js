@@ -50,16 +50,18 @@ const SignIn = () => {
         //Try to log the user in with the passed values
         try{
             //Attempt to authorize the user with the passed username and password
-            await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-            lblLoginErrorMessage.innerHTML = "Logged In";
+            await signInWithEmailAndPassword(auth, loginEmail, loginPassword).then( () => {
+                lblLoginErrorMessage.innerHTML = `You are Logged In As ${auth.currentUser.displayName}`;
             
-            pasChange.removeAttribute("hidden");
-            login.hidden = true;
-            adminPage.hidden = false;
-            userPage.hidden = false;
-            logoutBtn.hidden = false;
-
+                pasChange.removeAttribute("hidden");
+                login.hidden = true;
+                adminPage.hidden = false;
+                userPage.hidden = false;
+                logoutBtn.hidden = false;
+                lblLoginErrorMessage.hidden = false; 
+            });
         }
+        
         catch(error){
             //If it doesn.t work, log and show the user the appropreate error
             console.log(error);
@@ -188,12 +190,13 @@ const SignIn = () => {
                     <input id="userName" onChange={(e) => setUserName(e.target.value)}></input>
                     <label>Name [Only needed for signup (Optional)]</label>
                 </div>
-                <div id="divLoginError" class="group">
-                    <div id="lblLoginErrorMessage" class="errorlabel" hidden >Error message</div>
-                </div>
                 <button id="btnLogin" type="button" class="button buttonBlue" onClick={useLoginEmailPassword}>Log in</button>
                 <button id="btnSignup" type="button" class="button buttonBlue" onClick={createAccount}>Sign up</button>
                 </form>
+            </div>
+
+            <div id="divLoginError" class="group">
+                    <div id="lblLoginErrorMessage" class="errorlabel" hidden >Error message</div>
             </div>
 
 
