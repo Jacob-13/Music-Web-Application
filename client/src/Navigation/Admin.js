@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import PublicPlaylists from '../components/PublicPlaylists';
 import '../SecurityAndPrivatePolicy.txt';
+import { getAuth, updateProfile } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
 
 // Component Dependencies
 import SearchTrack from '../components/SearchTrack'
 import PromoteAdmin from '../components/Admin';
 
 const Admin = () => {
+
+    //Initialize the firebase app with the repository's values
+    const firebaseApp = initializeApp({
+        apiKey: "AIzaSyDuh3g6xopDh9FOhrM4W0LjIjw_NOvu_ic",
+        authDomain: "se3316-pparlato-jjohn483-lab4.firebaseapp.com",
+        projectId: "se3316-pparlato-jjohn483-lab4",
+        storageBucket: "se3316-pparlato-jjohn483-lab4.appspot.com",
+        messagingSenderId: "393530132117",
+        appId: "1:393530132117:web:9c1bc00dae89a62244fd9c",
+        measurementId: "G-YY9YP5YCVM"
+    });
+
+    const auth = getAuth(firebaseApp);
     
     // Track Searching Variables
     const [track, setTrack] = useState(''); // Used to hold the track search-bar value
@@ -32,7 +47,14 @@ const Admin = () => {
     const submitCreate = function () {
         setBtnTrack(track);
     }
+   
+    const [disUser, setDisUser] = useState("");
 
+    const disableUser = function () {
+        var user = disUser;
+        updateProfile(user, {disabled: true});
+    }
+    
     return (
         <div className="Home">
 
@@ -42,6 +64,11 @@ const Admin = () => {
                 <input id="newAdmin" value={track} onChange={(e) => setTrack(e.target.value)}></input>
                 <button id="btnLogin" type="button" class="button buttonBlue" onClick={submitCreate}>Add Admin</button>
                 <PromoteAdmin adminEmail={btnTrack}/>
+            </div>
+            <input id="disableUser" onChange={(e) => setDisUser(e.target.value)}></input>
+            <button id="btnLogin" type="button" class="button buttonBlue" onClick={disableUser}>Disable User</button>
+            <div>
+
             </div>
 
             <div>
