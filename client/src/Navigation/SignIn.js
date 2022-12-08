@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPas
 //import { hideLoginError, showApp, showLoginError, showLoginForm, showLoginState } from '../ui.js';
 import { useNavigate } from "react-router-dom";
 import { AuthErrorCodes } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
+import { Link } from 'react-router-dom';
 
 const SignIn = () => {
     //Initialize the firebase app with the repository's values
@@ -33,6 +34,11 @@ const SignIn = () => {
 
     //Select the value to be updated with the password
     const newPas = document.querySelector('#newPas');
+    const pasChange = document.querySelector('#pasChange');
+    const login = document.querySelector('#login');
+    const adminPage = document.querySelector('#adminPage');
+    const userPage = document.querySelector('#userPage');
+    const logoutBtn = document.querySelector('#logout');
 
     //Function to allow users to login with an email and a password
     const useLoginEmailPassword = async () => {
@@ -46,7 +52,12 @@ const SignIn = () => {
             //Attempt to authorize the user with the passed username and password
             await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
             lblLoginErrorMessage.innerHTML = "Logged In";
-            lblLoginErrorMessage.removeAttribute("hidden");
+            
+            pasChange.removeAttribute("hidden");
+            login.hidden = true;
+            adminPage.hidden = false;
+            userPage.hidden = false;
+            logoutBtn.hidden = false;
 
         }
         catch(error){
@@ -56,11 +67,14 @@ const SignIn = () => {
                     lblLoginErrorMessage.innerHTML = `Wrong password. Try again.`;
                 } else if (txtEmail == ""){
                     lblLoginErrorMessage.innerHTML = "Please enter an email";
+                } else if (txtPassword == ""){
+                    lblLoginErrorMessage.innerHTML = "Please enter a Password";
                 } else {
                     lblLoginErrorMessage.innerHTML = `Error: ${error.message}`;    
-                }
+                }lblLoginErrorMessage.removeAttribute("hidden");
 
             lblLoginErrorMessage.removeAttribute("hidden");
+            pasChange.hidden = true;
         }
     }
 
@@ -79,9 +93,16 @@ const SignIn = () => {
         .then(function () {
             var user = auth.currentUser;
             updateProfile(user, {displayName: usersName});
+            pasChange.removeAttribute("hidden");
             })
         .then(function (){
-            window.location.reload();
+            lblLoginErrorMessage.innerHTML = "Logged In";
+            lblLoginErrorMessage.removeAttribute("hidden");
+            login.hidden = true;
+            adminPage.hidden = false;
+            userPage.hidden = false;
+            logoutBtn.hidden = false;logoutBtn.hidden = false;
+            logoutBtn.hidden = false;
         })    
         }
         catch(error){
@@ -112,6 +133,12 @@ const SignIn = () => {
     const logout = async () => {
         //Sign out the user when called
         await signOut(auth);
+        login.hidden = false;
+        pasChange.hidden=true;
+        adminPage.hidden = true;
+        userPage.hidden = true;
+        logoutBtn.hidden = true;
+        logoutBtn.hidden = true;
     }
 
     //Function to update the password of a logged-in user
@@ -123,6 +150,12 @@ const SignIn = () => {
             //Show the new password to the user
             newPas.innerHTML("Password Updated to: " + newPasswordvalue);
             newPas.removeAttribute("hidden");
+            login.hidden = false;
+            pasChange.hidden=true;
+            adminPage.hidden = true;
+            userPage.hidden = true;
+            logoutBtn.hidden = true;
+            logoutBtn.hidden = true;
         //Catch any errors
         }).catch((error) => {
             newPas.innerHTML(error);
@@ -140,31 +173,46 @@ const SignIn = () => {
             </div>
 
             <div id="login">
-            <div class="header">
+                <div class="header">
+                </div>
+                <form>
+                <div class="group">
+                    <input id="txtEmail" type="email" onChange={(e) => setTxtEmail(e.target.value)}></input>
+                    <label>Email</label>
+                </div>
+                <div class="group">
+                    <input id="txtPassword" type="password" onChange={(e) => setTxtPassword(e.target.value)}></input>
+                    <label>Password</label>
+                </div>
+                <div class="group">
+                    <input id="userName" onChange={(e) => setUserName(e.target.value)}></input>
+                    <label>Name [Only needed for signup (Optional)]</label>
+                </div>
+                <div id="divLoginError" class="group">
+                    <div id="lblLoginErrorMessage" class="errorlabel" hidden >Error message</div>
+                </div>
+                <button id="btnLogin" type="button" class="button buttonBlue" onClick={useLoginEmailPassword}>Log in</button>
+                <button id="btnSignup" type="button" class="button buttonBlue" onClick={createAccount}>Sign up</button>
+                </form>
             </div>
-            <form>
-              <div class="group">
-                <input id="txtEmail" type="email" onChange={(e) => setTxtEmail(e.target.value)}></input>
-                <label>Email</label>
-              </div>
-              <div class="group">
-                <input id="txtPassword" type="password" onChange={(e) => setTxtPassword(e.target.value)}></input>
-                <label>Password</label>
-              </div>
-              <div class="group">
-                <input id="userName" onChange={(e) => setUserName(e.target.value)}></input>
-                <label>Name [Only needed for signup (Optional)]</label>
-              </div>
-              <div id="divLoginError" class="group">
-                <div id="lblLoginErrorMessage" class="errorlabel" hidden >Error message</div>
-              </div>
-              <button id="btnLogin" type="button" class="button buttonBlue" onClick={useLoginEmailPassword}>Log in</button>
-              <button id="btnSignup" type="button" class="button buttonBlue" onClick={createAccount}>Sign up</button>
-            </form>
-          </div>
 
-          <div>
 
+            <div id="logout" hidden>
+                <h1>Logout</h1>
+                <button id="btnLogout" type="button" class="button buttonBlue" onClick={logout}>Log out</button>
+            </div>
+
+            <div id="adminPage" hidden>
+                <h1>Admin Page</h1>
+                <Link to="/admin">Admin Page Link</Link>
+            </div>
+
+            <div id="userPage" hidden>
+                <h1>User Page</h1>
+                <Link to="/user">User Page Link</Link>
+            </div>
+
+          <div id="pasChange" hidden>
             <h1>Change Password</h1>
             <input id="newPassword" type="password" onChange={(e) => setNewPassword(e.target.value)}></input>
             <div id="divLoginError" class="group">

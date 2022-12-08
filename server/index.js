@@ -653,7 +653,7 @@ app.get('/api/admin', (req, res) => {
 app.put('/api/grantAdmin/:userEmails', (req, res) => {
     let newAdmin = req.params.userEmails;
  
-    const docRef = db.collection('Admin').doc(req.body.userEmail);
+    const docRef = db.collection('Admin').doc(newAdmin);
  
     docRef.set({
         userEmail: newAdmin
