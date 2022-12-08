@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PlaylistCreation from '../components/PlaylistCreation';
 
 // components
 import SearchTrack from '../components/SearchTrack';
@@ -15,7 +16,7 @@ const User = ({authUser}) => {
     // Creation variables
     const [createName, setCreateName] = useState('');
     const [createDesc, setCreateDesc] = useState('');
-    const [isPrivate, setIsPrivate] = useState(true);
+    const [isPrivate, setIsPrivate] = useState(false);
     // Create Button Values
     const [createBtnName, setCreateBtnName] = useState('');
     const [createBtnDesc, setCreateBtnDesc] = useState('');
@@ -68,6 +69,9 @@ const User = ({authUser}) => {
                 <div>
                     <button onClick={submitCreate}>Create</button>
                 </div>
+                <div>
+                    <PlaylistCreation listName={createBtnName} listDescription = {createBtnDesc} listPrivate = {createBtnPrivate} listCreator={user}/>
+                </div>
 
             </div>
 
@@ -93,9 +97,18 @@ const User = ({authUser}) => {
             <div>
 
                 <h3>Edit a Playlist</h3>
-                <p>Input the name of the playlist you would like to edit</p>
+                <p>Input the name of the playlist you would like to edit and the new information</p>
                 <div>
-                    Name: <input type='text' placeholder='name'/>
+                    Name: <input type='text' placeholder='name' value={createName} onChange={(e) => setCreateName(e.target.value)}/>
+                </div>
+                <div>
+                    Description: <input type='text' placeholder='name' value={createDesc} onChange={(e) => setCreateDesc(e.target.value)}/>
+                </div>
+                <div>
+                        Private: <input type="checkbox" checked={isPrivate} onChange={isPrivateChanged}/>
+                </div>
+                <div>
+                    <button onClick={submitCreate}>Submit</button>
                 </div>
 
             </div>

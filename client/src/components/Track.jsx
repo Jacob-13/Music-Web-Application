@@ -2,9 +2,10 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-const Track = ({id}) => {
+const Track = ({id, index}) => {
     
     const [track, setTrack] = useState({});
+    const [selected, setSelected] = useState(null);
 
     const getTrackInfo = async (track_id) => {
         fetch("/api/track/" + track_id)
@@ -14,6 +15,14 @@ const Track = ({id}) => {
             });
     }
     
+    const toggle = (i) => {
+        if (selected === i) {
+            return setSelected(null);
+        }
+
+        setSelected(i)
+    }
+
     const playTrack = function() {
         window.open(`https://www.youtube.com/results?search_query=${track.track_title}+By+${track.artist_name}`, '_blank');
     }
@@ -23,10 +32,12 @@ const Track = ({id}) => {
     }, [id]);
 
     return (
-       <div className="trackBasic" >
+       <div className="trackInformation" >
             {
                 track ? (
-                    <p><b>{track.track_title}</b> Artist: {track.artist_name}</p>
+                    <div className="trackBasicInfo" onClick={() => toggle(index)}>
+                        <b>{track.track_title}</b> Artist: {track.artist_name}
+                    </div>
                 ) : (
                     <p>There are no tracks in this playlist</p>
                 )
@@ -34,7 +45,11 @@ const Track = ({id}) => {
 
             {
                 track ? (
-                    <p> Duration: {track.track_duration} <button onClick={playTrack}>Play</button> </p>
+                    <div className={
+                        selected === index ? 'trackDetail show' : 'trackDetail'
+                    }>
+                        <p> Duration: {track.track_duration} <button onClick={playTrack}>Play</button> </p>
+                    </div>
                 ) : (
                     <p>There are no tracks in this playlist</p>
                 )
