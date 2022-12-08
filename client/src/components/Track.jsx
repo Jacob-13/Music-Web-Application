@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-const Track = ({id, index}) => {
+const Track = ({id, index, toggle, selection}) => {
     
     const [track, setTrack] = useState({});
     const [selected, setSelected] = useState(null);
@@ -15,13 +15,16 @@ const Track = ({id, index}) => {
             });
     }
     
+    /*
     const toggle = (i) => {
         if (selected === i) {
             return setSelected(null);
+            console.log(selected)
         }
-
-        setSelected(i)
-    }
+    
+        setSelected(i);
+        console.log(selected)
+    }*/
 
     const playTrack = function() {
         window.open(`https://www.youtube.com/results?search_query=${track.track_title}+By+${track.artist_name}`, '_blank');
@@ -29,7 +32,10 @@ const Track = ({id, index}) => {
 
     useEffect(() => {
         getTrackInfo(id);
+        setSelected(selection);
     }, [id]);
+
+    //onClick={() => toggle(index)}
 
     return (
        <div className="trackInformation" >
@@ -46,7 +52,7 @@ const Track = ({id, index}) => {
             {
                 track ? (
                     <div className={
-                        selected === index ? 'trackDetail show' : 'trackDetail'
+                        selection === index ? 'trackDetail show' : 'trackDetail'
                     }>
                         <p> Duration: {track.track_duration} <button onClick={playTrack}>Play</button> </p>
                     </div>
