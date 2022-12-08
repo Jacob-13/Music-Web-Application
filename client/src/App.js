@@ -10,6 +10,7 @@ import User from './Navigation/User.js';
 import SecurityAndPrivatePolicy from './Navigation/SecurityAndPrivatePolicy.js';
 import DCMANoticeAndTakedownPolicy from './Navigation/DCMANoticeAndTakedownPolicy.js';
 import AcceptableUsePolicy from './Navigation/AcceptableUsePolicy.js';
+import Admin from './Navigation/Admin.js';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path='/securityAndPrivatePolicy' element={<SecurityAndPrivatePolicy/>}/>
         <Route path='/dcmaNoticeAndTakedownPolicy' element={<DCMANoticeAndTakedownPolicy/>}/>
         <Route path='/acceptableUsePolicy' element={<AcceptableUsePolicy/>}/>
+        <Route path='/admin' element={<Admin/>}/>
       </Routes>
 
     </Router>
