@@ -13,6 +13,15 @@ const Navbar = () => {
             <li>
                 <Link to="/user">My Account</Link>
             </li>
+            <li>
+                <Link to="/securityAndPrivatePolicy">Security and Private Policy</Link>
+            </li>
+            <li>
+                <Link to="/dcmaNoticeAndTakedownPolicy">Acceptable Use Policy</Link>
+            </li>
+            <li>
+                <Link to="/acceptableUsePolicy">DCMA Notice and Takedown Policy</Link>
+            </li>
         </div>
     )
 }

@@ -404,8 +404,8 @@ loadPlaylists();
 //------------------------ VIDEO 1 IMPORTS AND BASICS ------------------------ \\
 //Import the needed functions from Firebase
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, updateProfile } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
-import { btnLogin, btnLogout, btnSignup, changePassword, hideLoginError, lblAuthState, showApp, showLoginError, showLoginForm, showLoginState } from './ui.js';
+import { getAuth, onAuthStateChanged, connectAuthEmulator, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, updateProfile, setCustomUserClaims } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
+import { btnLogin, btnLogout, btnSignup, btnUpdate, changePassword, hideLoginError, lblAuthState, showApp, showLoginError, showLoginForm, showLoginState } from '../../client/src/ui.js';
 
 //Initialize the firebase app with the repository's values
 const firebaseApp = initializeApp({
@@ -470,6 +470,15 @@ const createAccount = async () => {
 
 //Add an event listerner to call the createAccount function when the appropreate button is clicked
 btnSignup.addEventListener("click", createAccount);
+
+const makeAdmin = () => {
+    var admin = auth.currentUser;
+    auth.setCustomUserClaims(admin, { admin: true }).then(() =>{
+        console.log(admin);
+    });
+}
+
+btnUpdate.addEventListener("click", makeAdmin);
 
 //Funtion to monitor the login state of the user
 const monitorAuthState = async () => {

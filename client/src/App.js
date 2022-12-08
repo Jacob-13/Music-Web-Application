@@ -7,6 +7,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Navigation/Home.js';
 import SignIn from './Navigation/SignIn.js';
 import User from './Navigation/User.js';
+import SecurityAndPrivatePolicy from './Navigation/SecurityAndPrivatePolicy.js';
+import DCMANoticeAndTakedownPolicy from './Navigation/DCMANoticeAndTakedownPolicy.js';
+import AcceptableUsePolicy from './Navigation/AcceptableUsePolicy.js';
 
 function App() {
 
@@ -20,6 +23,9 @@ function App() {
         <Route path='/' element={<Home/>} />
         <Route path='/signIn' element={<SignIn/>} />
         <Route path='/user' element={<User/>} />
+        <Route path='/securityAndPrivatePolicy' element={<SecurityAndPrivatePolicy/>}/>
+        <Route path='/dcmaNoticeAndTakedownPolicy' element={<DCMANoticeAndTakedownPolicy/>}/>
+        <Route path='/acceptableUsePolicy' element={<AcceptableUsePolicy/>}/>
       </Routes>
 
     </Router>
