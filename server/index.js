@@ -407,6 +407,22 @@ app.put('/api/secure/create/:creator', (req, res) => {
     })();
     
 })
+
+app.get(`/api/deletePlaylist/:playlistName`, (req, res) => {
+
+    async function asynchCall() {
+        try {
+            const document = db.collection('Playlists').doc(req.params.playlistName);
+            await document.delete();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    
+    asynchCall();
+
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

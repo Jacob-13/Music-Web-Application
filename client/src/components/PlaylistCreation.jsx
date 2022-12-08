@@ -14,7 +14,8 @@ const PlaylistCreation = ({listName, listDescription, listPrivate, listCreator})
         'name': name,
         'track_ids': [2,3],
         'status': isPrivate,
-        'description': description
+        'description': description,
+        'last_modified_date': Date()
     }
 
     const options = {
