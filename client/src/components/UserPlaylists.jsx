@@ -7,6 +7,7 @@ const UserPlaylists = ({user}) => {
 
     const [creator, setCreator] = useState('jacob@test.ca');
     const [playlists, setPlaylists] = useState([]);
+    const [selected, setSelected] = useState(null);
 
     const getUserPlaylists = async () => {  //Fetching the public playlists from back-end
         fetch(`/api/secure/userlists/${creator}`)
@@ -16,11 +17,20 @@ const UserPlaylists = ({user}) => {
         })
     }
 
+    const toggle = (i) => {
+        
+        if (selected === i) {
+            return setSelected(null);
+        }
+
+        setSelected(i);
+    }
+
     useEffect(() => {
         setCreator(user);
         getUserPlaylists();
         console.log('component' + creator)
-    }, [user])
+    }, [user, selected])
 
     return(
         <div className="userPlaylists">
@@ -30,8 +40,8 @@ const UserPlaylists = ({user}) => {
                     ? (
                         <ol>
                             {
-                                playlists.map((playlist) => (
-                                    <PlaylistTrack playlist={playlist}/>
+                                playlists.map((playlist, i) => (
+                                    <PlaylistTrack playlist={playlist} index={i} toggle={toggle} selection={selected}/>
                                 ))
                             }
                         </ol>

@@ -6,6 +6,7 @@ import Track from './Track';
 const PlaylistTrack = ({playlist}) => {
 
     const [selected, setSelected] = useState(null);
+    const [name, setName] = useState('');
 
     const toggle = (i) => {
         
@@ -14,15 +15,26 @@ const PlaylistTrack = ({playlist}) => {
         }
 
         setSelected(i);
-    }
+    }   
+
+    useEffect(() => {
+        setName(playlist.name)
+    }, [])
 
     return (
        <li>
         {
             playlist ? (
                 <div className="playlist">
-                    {playlist.name}
+                    <b>{playlist.name}</b> Description: {playlist.description}
+                    <div>
+                        Last Modified Date: {playlist.last_modified_date}
+                    </div>
+                    <div>
+                        <button>Delete</button>
+                    </div>
                 </div>
+                
             ) : (
                 <div>No Playlists Found!</div>
             )
